@@ -43,27 +43,27 @@ impl Default for Person {
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
         if s.len() == 0 {
-            Person::default()
-        } else {
-            let v: Vec<_> = s.split(',').collect();
-            if v.len() != 2 {
-                return Person::default();
-            }
+            return Person::default();
+        }
+        
+        let v: Vec<_> = s.split(',').collect();
+        if v.len() != 2 {
+            return Person::default();
+        }
 
-            let name = v[0].to_string();
-            if name.len() == 0 {
-                return Person::default();
-            }
+        let name = v[0].to_string();
+        if name.len() == 0 {
+            return Person::default();
+        }
 
-            let age = v[1].parse();
-            if let Err(_) = age {
-                return Person::default();
-            }
+        let age = v[1].parse();
+        if let Err(_) = age {
+            return Person::default();
+        }
 
-            Person {
-                name,
-                age: age.unwrap()
-            }
+        Person {
+            name,
+            age: age.unwrap()
         }
     }
 }
