@@ -3,10 +3,41 @@
 	This problem requires you to implement a sorting algorithm
 	you can use bubble sorting, insertion sorting, heap sorting, etc.
 */
-// I AM NOT DONE
+use std::mem::swap;
+use std::cmp::PartialOrd;
+use std::fmt::Display;
 
-fn sort<T>(array: &mut [T]){
+fn partition<T: PartialOrd>(array: &mut [T], mut lidx: usize, mut ridx: usize) -> usize {
+    let base_idx = lidx;
+    while lidx < ridx {
+        while lidx < ridx && array[base_idx] <= array[ridx] {
+            ridx -= 1;
+        }
+        while lidx < ridx && array[lidx] <= array[base_idx] {
+            lidx += 1;
+        }
+        array.swap(lidx, ridx);
+    }
+    array.swap(base_idx, lidx);
+    lidx
+}
+
+fn quick_sort<T: PartialOrd + Display>(array: &mut [T], lidx: usize, ridx: usize) {
+    if lidx >= ridx {
+        return;
+    }
+    let mid = partition(array, lidx, ridx);
+    if mid > 0 {
+        quick_sort(array, lidx, mid - 1);
+    } 
+    if mid < ridx {
+        quick_sort(array, mid + 1, ridx);
+    }
+}
+
+fn sort<T: PartialOrd + Display>(array: &mut [T]){
 	//TODO
+    quick_sort(array, 0, array.len() - 1);
 }
 #[cfg(test)]
 mod tests {

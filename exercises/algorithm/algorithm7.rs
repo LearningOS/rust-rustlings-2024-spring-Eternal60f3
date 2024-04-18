@@ -3,7 +3,9 @@
 	This question requires you to use a stack to achieve a bracket match
 */
 
-// I AM NOT DONE
+use std::rc::Rc;
+use std::cell::RefCell;
+
 #[derive(Debug)]
 struct Stack<T> {
 	size: usize,
@@ -32,7 +34,12 @@ impl<T> Stack<T> {
 	}
 	fn pop(&mut self) -> Option<T> {
 		// TODO
-		None
+		if self.size > 0 {
+			self.size -= 1;
+			self.data.pop()
+		} else {
+			None
+		}
 	}
 	fn peek(&self) -> Option<&T> {
 		if 0 == self.size {
@@ -99,10 +106,53 @@ impl<'a, T> Iterator for IterMut<'a, T> {
 	}
 }
 
-fn bracket_match(bracket: &str) -> bool
-{
+fn bracket_match(bracket: &str) -> bool {
 	//TODO
-	true
+	let mut stk = Rc::new(RefCell::new(Stack::<char>::new()));
+
+	let mut process = |need: char| -> bool {
+		let mut flag = false;
+		let mut stk = stk.clone();
+		if let Some(tmp) = stk.borrow_mut().pop() {
+			if need == '{' {
+				println!("{}", tmp);
+			}
+			match tmp {
+				x if x == need => {
+					flag = true;
+				},
+				_ => {
+					return false;
+				}
+			}
+		}
+		return flag;
+	};
+
+	for ch in bracket.chars() {
+		match ch {
+			'(' | '[' | '{' => {
+				stk.clone().borrow_mut().push(ch);
+			},
+			')' => {
+				if !process('(') {
+					return false;
+				}
+			},
+			']' => {
+				if !process('[') {
+					return false;
+				}
+			},
+			'}' => {
+				if !process('{') {
+					return false;
+				}
+			}
+			_ => {}
+		}
+	}
+	return stk.borrow().len() == 0;
 }
 
 #[cfg(test)]
