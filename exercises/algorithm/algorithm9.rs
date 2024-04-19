@@ -53,7 +53,7 @@ where
                 break;
             }
         }
-        println!("peek: {}", self.items[1]);
+        // println!("peek: {}", self.items[1]);
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
